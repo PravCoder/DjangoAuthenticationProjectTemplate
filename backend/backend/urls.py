@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/user/register/", CreateUserView.as_view(), name="register"),  # hen we go to this path it calls this view
     # link token obstain/refresh
-    path("api/token/", TokenObtainPairView.as_view(), name="get_token"),
+    path("api/token/", TokenObtainPairView.as_view(), name="get_token"),   # send request to this path when login is pressed
     path("api/token/refresh/", TokenRefreshView.as_view(), name="refresh"),
     path("api-auth/", include("rest_framework.urls")),
 

@@ -5,7 +5,7 @@ from .serializers import UserSerializer, NoteSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Note
 
-# inherit from built-in ciew that represents a collection of model instances, this view will list all of the notes user has created
+# inherit from built-in view that represents a collection of model instances, this view will list all of the notes user has created
 class NoteListCreate(generics.ListCreateAPIView):
     serializer_class = NoteSerializer  
     permission_classes = [IsAuthenticated]  # cannot call this route unless you are authenticated and pass a valid jwt-toekn
