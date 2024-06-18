@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Foo from "./pages/Foo";
 
 function Logout() {
   localStorage.clear(); // when we logout we clear our refresh/access tokens
@@ -32,6 +33,8 @@ function App() {
         <Route path="/register" element={<RegisterAndLogout />}/>
         {/* render 404-page anytime any other path is visited */} 
         <Route path="*" element={<NotFound />}/>
+
+        <Route path="/foo" element={<Foo />}/>
 
       </Routes>
     </BrowserRouter>

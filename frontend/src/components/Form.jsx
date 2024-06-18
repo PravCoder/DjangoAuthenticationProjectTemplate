@@ -3,6 +3,7 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Form.css";
+import LoadingIndicator from "./LoadingIndicator";
 
 // props: route is the path we want to go to upon submission, mehtod is login or register
 function Form({route, method}) {
@@ -42,6 +43,7 @@ function Form({route, method}) {
 
         <input className="form-input" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password"/>
 
+        {loading && <LoadingIndicator />}
         <button className="form-button" type="submit">{name}</button>
     
     </form>
