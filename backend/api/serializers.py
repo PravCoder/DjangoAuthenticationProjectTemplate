@@ -1,23 +1,32 @@
-from django.contrib.auth.models import User  # import built-in user-model
 from rest_framework import serializers
-from .models import Note
-
-# serializer converts python-data into json-data vice versa
+from .models import User, Note
 
 class UserSerializer(serializers.ModelSerializer):
 
+    password = serializers.CharField(write_only=True) # defined as string and write-only which means it can only be used during write operations like registration/update
+
+    # meta-class specifies the model-class that is associated with this serializer, set to User-model, can specify the list of fields that will be included in serialization or all fields
     class Meta:
         model = User
-        fields = ["id", "username", "password"]  # fields we want to serialize
-        extra_kwargs = {"password": {"write_only":True}}  # we want to accept password when creating a new user, do not want to return password when getting info about user. No one can read what the password is
+        fields = 'first_name', 'last_name', 'email', 'password'
 
-    # handles creating user-obj, takes in dict of valid-data checked by serializer, makes sures fields-speciifed are valid
+    # handles creating a new user on registration, takes in dictionary of valid-form-data, returns created-user-obj
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)  # pass all of the data
-        return user
+        email = validated_data["email"]
+        password = validated_data["password"]
+        first_name = validated_data["first_name"]
+        last_name = validated_data["last_name"]
+        print("DOES THIS EVERY GET PRINTED")
+        new_user = User(email=email, username=email,  password=password, first_name=first_name, last_name=last_name)  # create new user-obj using form-fields
+        new_user.set_password(password)             # hash the plain-text password before saving to users.password in db
+        new_user.save()
+        print("\nDOES THIS EVERY GET PRINTED"+str(new_user))
+        return new_user
+    
     
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
-        fields = ["id", "title", "content","created_at","author"]
-        extra_kwargs = {"author":{"read_only":True}} # we should be able to read who author is but not write it. Mannualy set who author is, someone cant just decide who the author is.
+        fields = ["id", "title", "content", "created_at", "author"]
+        extra_kwargs = {"author": {"read_only": True}}
+    

@@ -19,7 +19,6 @@ function FooForm() {
         } catch (error) {
             alert(error);
         } finally {
-            setLoading(false);
         }
     }
 

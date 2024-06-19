@@ -1,24 +1,23 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User  # import built-in user model change this to custom in models.py
 from rest_framework import generics
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from .serializers import UserSerializer, NoteSerializer
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Note
+from .models import Note, User
+from rest_framework.response import Response
 
-# inherit from built-in view that represents a collection of model instances, this view will list all of the notes user has created
+
 class NoteListCreate(generics.ListCreateAPIView):
-    serializer_class = NoteSerializer  
-    permission_classes = [IsAuthenticated]  # cannot call this route unless you are authenticated and pass a valid jwt-toekn
-    
+    serializer_class = NoteSerializer
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
-        user = self.request.user  # get current authenticated-user-obj
-        return Note.objects.filter(author=user)  # use that user to filter notes and get notes written by user
+        user = self.request.user
+        return Note.objects.filter(author=user)
 
     def perform_create(self, serializer):
-        if serializer.is_valid(): # if the data that was passed to serializer passed all checks, to create new note
-            serializer.save(author=self.request.user)  # save serializer makes a new version of the note pass additional field author because it is read-only in serializer
+        if serializer.is_valid():
+            serializer.save(author=self.request.user)
         else:
             print(serializer.errors)
 
@@ -27,26 +26,29 @@ class NoteDelete(generics.DestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user = self.request.user  # get current authenticated-user-obj
-        return Note.objects.filter(author=user)  # use that user to filter notes and get notes written by user
-        
+        user = self.request.user
+        return Note.objects.filter(author=user)
 
-# inherit from built-in create-view which automaticall handels creating a new object
+
 class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()  # providing list exisitng users to view, so it doesn't create duplicate
- 
-    serializer_class = UserSerializer   # serializer-class tells view what kind of data we need to accept to create a new user
-
-    permission_classes = [AllowAny]  # who can call this, anyone
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
 
 foo_db = ["foo1","foo1","foo1","foo1","foo1" ]
 @api_view(["GET"]) # his view function will respond to HTTP GET requests. When a GET request is made to the corresponding URL (e.g., /api/hello-world/), this function will be invoked
 def get_foo(request):
-    return Response({'foo_list': foo_db})
+    print(f"USER: {request.user}")
+    for user in User.objects.all():
+        print(user)
+
+    user_serializer = UserSerializer(request.user)
+    return Response({'foo_list': foo_db, "user":user_serializer.data["email"]})
 
 @api_view(["POST"]) # his view function will respond to HTTP GET requests. When a GET request is made to the corresponding URL (e.g., /api/hello-world/), this function will be invoked
 def create_foo(request):
+    print("HELLOasdasdasdasdasdasdasdasdas")
     content = request.data["content"]
     foo_db.append(content)
     return Response({'foo_list': foo_db})

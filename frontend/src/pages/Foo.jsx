@@ -6,6 +6,7 @@ import FooForm from "../components/FooForm";
 
 function Foo() {
     const [fooList, setFooList] = useState([]);
+    const [user, setUser] = useState("none");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -17,6 +18,7 @@ function Foo() {
             .then(res => {
                 console.log(res);
                 setFooList(res.data.foo_list); // Assuming res.data contains the list of foos
+                setUser(res.data.user);
             })
             .catch(err => {
                 console.error(err);
@@ -25,6 +27,7 @@ function Foo() {
 
     return (
         <div>
+            <h1>Current user: {user}</h1>
             <p>All foos..</p>
             {fooList.length > 0 ? (
                 fooList.map((foo, index) => (
