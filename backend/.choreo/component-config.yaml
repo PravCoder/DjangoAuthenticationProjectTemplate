@@ -7,4 +7,4 @@ spec:
       type: REST
       networkVisibility: Public
       context: /
-      schemaFilePath: openapi.yaml
+      # schemaFilePath: openapi.yaml
