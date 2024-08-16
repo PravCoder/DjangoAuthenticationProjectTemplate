@@ -3,8 +3,12 @@ import { ACCESS_TOKEN } from "./constants";
 // Interceptor: intercepts any requests that we are going to send, and automatically add the correct headers so that we dont need to manually write it a bunch of times in our code.
 // we import this api-var in other files to send requests
 // allows us to import anything that is specified inside an environment variable file. Create axios-object
+
+// from choreo connection backend or frontend, uses this url in deployment
+const apiUrl = "/choreo-apis/djangoreacttutorial/backend/v1"
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL  // import vite-api-url var
+    baseURL: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : apiUrl,  // import vite-api-url var
 })
 
 
